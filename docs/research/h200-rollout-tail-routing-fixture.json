@@ -1,0 +1,412 @@
+{
+  "schema_version": "h200-rollout-tail-routing-fixture.v0",
+  "source": "Synthetic fixture derived from the H200 rollout-tail request shapes; not a benchmark result.",
+  "two_lane_acceptance": {
+    "policy_name": "proxyguard8-two-lane",
+    "source": "Synthetic batch derived from proxyguard8 mechanics; not a benchmark result.",
+    "promotion_budget": {
+      "max_tail_wall_improvement_pct_min": 20.0,
+      "runtime_improvement_pct_min": 0.0,
+      "completed_rps_regression_pct_max": 15.0,
+      "short_p95_regression_pct_max": 5.0
+    },
+    "rank_identity_required": true,
+    "batch": [
+      {
+        "group_id": "long-a",
+        "shape_hint": "cap_saturated_reasoning",
+        "predicted_output_tokens": 2048,
+        "lane": "predicted-long",
+        "assigned_endpoint_id": "decode-a",
+        "assigned_rank_id": "rank-0",
+        "projected_load_before": {
+          "decode-a|rank-0": 0,
+          "decode-b|rank-1": 0,
+          "decode-c|rank-2": 0
+        },
+        "projected_load_after": {
+          "decode-a|rank-0": 2048,
+          "decode-b|rank-1": 0,
+          "decode-c|rank-2": 0
+        },
+        "score_components": {
+          "projected_load": 0,
+          "predicted_load": 2048,
+          "throughput_penalty": 120,
+          "proxy_guardrail_penalty": 80
+        }
+      },
+      {
+        "group_id": "long-b",
+        "shape_hint": "uncapped_reasoning_loop",
+        "predicted_output_tokens": 4096,
+        "lane": "predicted-long",
+        "assigned_endpoint_id": "decode-b",
+        "assigned_rank_id": "rank-1",
+        "projected_load_before": {
+          "decode-a|rank-0": 2048,
+          "decode-b|rank-1": 0,
+          "decode-c|rank-2": 0
+        },
+        "projected_load_after": {
+          "decode-a|rank-0": 2048,
+          "decode-b|rank-1": 4096,
+          "decode-c|rank-2": 0
+        },
+        "score_components": {
+          "projected_load": 0,
+          "predicted_load": 4096,
+          "throughput_penalty": 180,
+          "proxy_guardrail_penalty": 160
+        }
+      },
+      {
+        "group_id": "short-a",
+        "shape_hint": "short_easy",
+        "predicted_output_tokens": 700,
+        "lane": "short-normal",
+        "assigned_endpoint_id": "decode-c",
+        "assigned_rank_id": "rank-2",
+        "projected_load_before": {
+          "decode-a|rank-0": 2048,
+          "decode-b|rank-1": 4096,
+          "decode-c|rank-2": 0
+        },
+        "projected_load_after": {
+          "decode-a|rank-0": 2048,
+          "decode-b|rank-1": 4096,
+          "decode-c|rank-2": 0
+        },
+        "score_components": {
+          "projected_load": 0,
+          "predicted_load": 700,
+          "throughput_penalty": 0,
+          "proxy_guardrail_penalty": 0
+        }
+      },
+      {
+        "group_id": "long-c",
+        "shape_hint": "cap_saturated_reasoning",
+        "predicted_output_tokens": 2048,
+        "lane": "predicted-long",
+        "assigned_endpoint_id": "decode-c",
+        "assigned_rank_id": "rank-2",
+        "projected_load_before": {
+          "decode-a|rank-0": 2048,
+          "decode-b|rank-1": 4096,
+          "decode-c|rank-2": 0
+        },
+        "projected_load_after": {
+          "decode-a|rank-0": 2048,
+          "decode-b|rank-1": 4096,
+          "decode-c|rank-2": 2048
+        },
+        "score_components": {
+          "projected_load": 0,
+          "predicted_load": 2048,
+          "throughput_penalty": 90,
+          "proxy_guardrail_penalty": 60
+        }
+      }
+    ],
+    "summary_metrics": {
+      "tail_wall_improvement_pct": 26.5,
+      "runtime_improvement_pct": 2.3,
+      "completed_rps_regression_pct": 12.0,
+      "short_p95_regression_pct": 3.0
+    }
+  },
+  "records": [
+    {
+      "case_id": "h200-long-4096",
+      "request": {
+        "request_id": "fixture-long-4096",
+        "arrival_ms": 0,
+        "model": "phi-4",
+        "prompt_tokens": 420,
+        "requested_output_cap": 4096,
+        "predicted_output_tokens_bucket": "long-4096",
+        "shape_hint": "uncapped_reasoning_loop",
+        "slo_class": "batch-rollout"
+      },
+      "policy": {
+        "name": "tail-aware-projected-decode",
+        "version": "fixture-v0",
+        "scorer_weights": {
+          "projected_decode_work": 0.55,
+          "decode_tps": 0.25,
+          "queue_depth": 0.15,
+          "kv_pressure": 0.05
+        },
+        "fallback_policy": "least-inflight",
+        "fallback_reason": null
+      },
+      "candidates": [
+        {
+          "endpoint_id": "decode-a",
+          "rank_id": "rank-0",
+          "metrics_age_ms": 400,
+          "running_requests": 4,
+          "waiting_requests": 1,
+          "kv_cache_utilization": 0.72,
+          "decode_tps": 42.0,
+          "completed_rps": 0.13,
+          "recent_request_wall_p95_ms": 118000,
+          "projected_remaining_decode_tokens": 7600,
+          "score": 0.41,
+          "filtered_reason": null
+        },
+        {
+          "endpoint_id": "decode-b",
+          "rank_id": "rank-1",
+          "metrics_age_ms": 380,
+          "running_requests": 4,
+          "waiting_requests": 0,
+          "kv_cache_utilization": 0.54,
+          "decode_tps": 70.0,
+          "completed_rps": 0.21,
+          "recent_request_wall_p95_ms": 84000,
+          "projected_remaining_decode_tokens": 4300,
+          "score": 0.72,
+          "filtered_reason": null
+        }
+      ],
+      "decision": {
+        "selected_endpoint_id": "decode-b",
+        "selected_rank_id": "rank-1",
+        "selected_score": 0.72,
+        "baseline_least_inflight_endpoint_id": "decode-a",
+        "rejected_near_tie_endpoint_ids": [],
+        "reason": "Similar in-flight count, lower projected decode work, and higher decode TPS."
+      },
+      "outcome": {
+        "actual_output_tokens": 4096,
+        "cap_saturated": true,
+        "queue_ms": 1200,
+        "decode_ms": 90000,
+        "request_wall_ms": 92300,
+        "success": true,
+        "quality_or_truncation_signal": "cap_saturated_uncapped_budget"
+      },
+      "replay_assertion": "Tail-aware policy must not use least-inflight alone when projected decode differs."
+    },
+    {
+      "case_id": "h200-capped-2048",
+      "request": {
+        "request_id": "fixture-capped-2048",
+        "arrival_ms": 250,
+        "model": "phi-4",
+        "prompt_tokens": 390,
+        "requested_output_cap": 2048,
+        "predicted_output_tokens_bucket": "near-cap-2048",
+        "shape_hint": "cap_saturated_reasoning",
+        "slo_class": "batch-rollout"
+      },
+      "policy": {
+        "name": "tail-aware-projected-decode",
+        "version": "fixture-v0",
+        "scorer_weights": {
+          "projected_decode_work": 0.55,
+          "decode_tps": 0.25,
+          "queue_depth": 0.15,
+          "kv_pressure": 0.05
+        },
+        "fallback_policy": "least-inflight",
+        "fallback_reason": null
+      },
+      "candidates": [
+        {
+          "endpoint_id": "decode-a",
+          "rank_id": "rank-0",
+          "metrics_age_ms": 520,
+          "running_requests": 2,
+          "waiting_requests": 0,
+          "kv_cache_utilization": 0.83,
+          "decode_tps": 39.0,
+          "completed_rps": 0.11,
+          "recent_request_wall_p95_ms": 126000,
+          "projected_remaining_decode_tokens": 6200,
+          "score": 0.39,
+          "filtered_reason": null
+        },
+        {
+          "endpoint_id": "decode-c",
+          "rank_id": "rank-2",
+          "metrics_age_ms": 330,
+          "running_requests": 3,
+          "waiting_requests": 0,
+          "kv_cache_utilization": 0.48,
+          "decode_tps": 76.0,
+          "completed_rps": 0.24,
+          "recent_request_wall_p95_ms": 79000,
+          "projected_remaining_decode_tokens": 3100,
+          "score": 0.75,
+          "filtered_reason": null
+        }
+      ],
+      "decision": {
+        "selected_endpoint_id": "decode-c",
+        "selected_rank_id": "rank-2",
+        "selected_score": 0.75,
+        "baseline_least_inflight_endpoint_id": "decode-a",
+        "rejected_near_tie_endpoint_ids": [],
+        "reason": "The lower-queue endpoint is already carrying long decode work; cap does not make the request cheap."
+      },
+      "outcome": {
+        "actual_output_tokens": 2048,
+        "cap_saturated": true,
+        "queue_ms": 900,
+        "decode_ms": 40200,
+        "request_wall_ms": 41400,
+        "success": true,
+        "quality_or_truncation_signal": "cap_saturated"
+      },
+      "replay_assertion": "Requested cap is a bounded maximum and must not collapse capped-long work into the short-request bucket."
+    },
+    {
+      "case_id": "h200-short-700",
+      "request": {
+        "request_id": "fixture-short-700",
+        "arrival_ms": 500,
+        "model": "phi-4",
+        "prompt_tokens": 180,
+        "requested_output_cap": 2048,
+        "predicted_output_tokens_bucket": "short-700",
+        "shape_hint": "short_easy",
+        "slo_class": "batch-rollout"
+      },
+      "policy": {
+        "name": "tail-aware-projected-decode",
+        "version": "fixture-v0",
+        "scorer_weights": {
+          "projected_decode_work": 0.55,
+          "decode_tps": 0.25,
+          "queue_depth": 0.15,
+          "kv_pressure": 0.05
+        },
+        "fallback_policy": "least-inflight",
+        "fallback_reason": null
+      },
+      "candidates": [
+        {
+          "endpoint_id": "decode-b",
+          "rank_id": "rank-1",
+          "metrics_age_ms": 260,
+          "running_requests": 3,
+          "waiting_requests": 0,
+          "kv_cache_utilization": 0.51,
+          "decode_tps": 74.0,
+          "completed_rps": 0.25,
+          "recent_request_wall_p95_ms": 82000,
+          "projected_remaining_decode_tokens": 3800,
+          "score": 0.64,
+          "filtered_reason": null
+        },
+        {
+          "endpoint_id": "decode-d",
+          "rank_id": "rank-3",
+          "metrics_age_ms": 300,
+          "running_requests": 2,
+          "waiting_requests": 0,
+          "kv_cache_utilization": 0.50,
+          "decode_tps": 68.0,
+          "completed_rps": 0.22,
+          "recent_request_wall_p95_ms": 76000,
+          "projected_remaining_decode_tokens": 2200,
+          "score": 0.70,
+          "filtered_reason": null
+        }
+      ],
+      "decision": {
+        "selected_endpoint_id": "decode-d",
+        "selected_rank_id": "rank-3",
+        "selected_score": 0.70,
+        "baseline_least_inflight_endpoint_id": "decode-d",
+        "rejected_near_tie_endpoint_ids": [
+          "decode-b"
+        ],
+        "reason": "Short request can use a healthy low-pressure endpoint without stacking behind known long work."
+      },
+      "outcome": {
+        "actual_output_tokens": 713,
+        "cap_saturated": false,
+        "queue_ms": 500,
+        "decode_ms": 11800,
+        "request_wall_ms": 12400,
+        "success": true,
+        "quality_or_truncation_signal": "not_truncated"
+      },
+      "replay_assertion": "Mixed-workload replay must report short-request latency so long-tail gains do not hide short-request starvation."
+    },
+    {
+      "case_id": "h200-straggler-2048",
+      "request": {
+        "request_id": "fixture-straggler-2048",
+        "arrival_ms": 750,
+        "model": "phi-4",
+        "prompt_tokens": 410,
+        "requested_output_cap": 2048,
+        "predicted_output_tokens_bucket": "near-cap-2048",
+        "shape_hint": "cap_saturated_reasoning",
+        "slo_class": "batch-rollout"
+      },
+      "policy": {
+        "name": "least-inflight-baseline",
+        "version": "fixture-v0",
+        "scorer_weights": {
+          "running_requests": 1.0
+        },
+        "fallback_policy": null,
+        "fallback_reason": null
+      },
+      "candidates": [
+        {
+          "endpoint_id": "decode-a",
+          "rank_id": "rank-0",
+          "metrics_age_ms": 6800,
+          "running_requests": 1,
+          "waiting_requests": 0,
+          "kv_cache_utilization": 0.88,
+          "decode_tps": 24.0,
+          "completed_rps": 0.05,
+          "recent_request_wall_p95_ms": 149000,
+          "projected_remaining_decode_tokens": 9100,
+          "score": 1.0,
+          "filtered_reason": null
+        },
+        {
+          "endpoint_id": "decode-c",
+          "rank_id": "rank-2",
+          "metrics_age_ms": 420,
+          "running_requests": 3,
+          "waiting_requests": 0,
+          "kv_cache_utilization": 0.49,
+          "decode_tps": 73.0,
+          "completed_rps": 0.23,
+          "recent_request_wall_p95_ms": 81000,
+          "projected_remaining_decode_tokens": 3400,
+          "score": 0.33,
+          "filtered_reason": null
+        }
+      ],
+      "decision": {
+        "selected_endpoint_id": "decode-a",
+        "selected_rank_id": "rank-0",
+        "selected_score": 1.0,
+        "baseline_least_inflight_endpoint_id": "decode-a",
+        "rejected_near_tie_endpoint_ids": [],
+        "reason": "Baseline selected the endpoint with the fewest running requests despite stale and degraded decode-health metrics."
+      },
+      "outcome": {
+        "actual_output_tokens": 2048,
+        "cap_saturated": true,
+        "queue_ms": 23000,
+        "decode_ms": 126000,
+        "request_wall_ms": 151000,
+        "success": true,
+        "quality_or_truncation_signal": "cap_saturated"
+      },
+      "replay_assertion": "A tail-aware replay must attribute the straggler to degraded state, stale metrics, or missing evidence, then demote the endpoint or fail closed to a named baseline."
+    }
+  ]
+}

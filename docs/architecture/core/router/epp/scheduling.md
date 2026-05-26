@@ -140,6 +140,12 @@ See [Disaggregated Serving](../../../advanced/disaggregation/README.md) for more
 
 ---
 
+## Tail-Aware Routing Research
+
+The H200 rollout-tail investigation produced llm-d-facing guidance for request-shape-aware routing: cap-saturated decode loops, mixed cheap/expensive requests, and backend/rank stragglers require per-replica decode health, replayable routing evidence, and evaluation beyond least-inflight placement. See [H200 rollout-tail implications for llm-d routing](../../../../research/h200-rollout-tail-routing-20260526.md) for the current design/eval implications.
+
+---
+
 ## Metrics & Observability
 
 The EPP Scheduler exposes detailed metrics to track pool health and scheduling decisions.
