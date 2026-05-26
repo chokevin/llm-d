@@ -34,7 +34,8 @@
           "predicted_load": 2048,
           "throughput_penalty": 120,
           "proxy_guardrail_penalty": 80
-        }
+        },
+        "expected_decision": "select-predicted-long-lane-and-update-projected-load"
       },
       {
         "group_id": "long-b",
@@ -58,7 +59,8 @@
           "predicted_load": 4096,
           "throughput_penalty": 180,
           "proxy_guardrail_penalty": 160
-        }
+        },
+        "expected_decision": "spread-predicted-long-to-different-rank"
       },
       {
         "group_id": "short-a",
@@ -82,7 +84,8 @@
           "predicted_load": 700,
           "throughput_penalty": 0,
           "proxy_guardrail_penalty": 0
-        }
+        },
+        "expected_decision": "keep-short-normal-on-throughput-lane"
       },
       {
         "group_id": "long-c",
@@ -106,7 +109,8 @@
           "predicted_load": 2048,
           "throughput_penalty": 90,
           "proxy_guardrail_penalty": 60
-        }
+        },
+        "expected_decision": "spread-predicted-long-after-short-lane-isolation"
       }
     ],
     "summary_metrics": {
@@ -114,7 +118,8 @@
       "runtime_improvement_pct": 2.3,
       "completed_rps_regression_pct": 12.0,
       "short_p95_regression_pct": 3.0
-    }
+    },
+    "expected_outcome": "promote-two-lane-policy-for-predicted-long-traffic-only"
   },
   "records": [
     {

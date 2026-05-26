@@ -75,6 +75,7 @@ TWO_LANE_ITEM_FIELDS = {
     "projected_load_before",
     "projected_load_after",
     "score_components",
+    "expected_decision",
 }
 TWO_LANE_SCORE_FIELDS = {
     "projected_load",
@@ -94,6 +95,15 @@ SUMMARY_METRIC_FIELDS = {
     "completed_rps_regression_pct",
     "short_p95_regression_pct",
 }
+EXPECTED_LONG_DECISIONS = {
+    "select-predicted-long-lane-and-update-projected-load",
+    "spread-predicted-long-to-different-rank",
+    "spread-predicted-long-after-short-lane-isolation",
+}
+EXPECTED_SHORT_DECISIONS = {
+    "keep-short-normal-on-throughput-lane",
+}
+EXPECTED_TWO_LANE_OUTCOME = "promote-two-lane-policy-for-predicted-long-traffic-only"
 
 
 def load_fixture(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
@@ -247,7 +257,15 @@ def validate_two_lane_acceptance(value: Any, errors: list[str]) -> None:
 
     require_fields(
         acceptance,
-        {"policy_name", "source", "promotion_budget", "rank_identity_required", "batch", "summary_metrics"},
+        {
+            "policy_name",
+            "source",
+            "promotion_budget",
+            "rank_identity_required",
+            "batch",
+            "summary_metrics",
+            "expected_outcome",
+        },
         "two_lane_acceptance",
         errors,
     )
@@ -258,6 +276,8 @@ def validate_two_lane_acceptance(value: Any, errors: list[str]) -> None:
         errors.append("two_lane_acceptance.source: must state that the fixture is not a benchmark result")
     if acceptance.get("rank_identity_required") is not True:
         errors.append("two_lane_acceptance.rank_identity_required: must be true")
+    if acceptance.get("expected_outcome") != EXPECTED_TWO_LANE_OUTCOME:
+        errors.append(f"two_lane_acceptance.expected_outcome: expected {EXPECTED_TWO_LANE_OUTCOME!r}")
 
     promotion_budget = require_object(
         acceptance.get("promotion_budget"),
@@ -323,8 +343,13 @@ def validate_two_lane_acceptance(value: Any, errors: list[str]) -> None:
             previous_after = after
 
         lane = item_obj.get("lane")
+        expected_decision = item_obj.get("expected_decision")
+        if not isinstance(expected_decision, str) or not expected_decision:
+            errors.append(f"{label}.expected_decision: must be a non-empty string")
         key = target_key(item_obj)
         if lane == LONG_LANE:
+            if expected_decision not in EXPECTED_LONG_DECISIONS:
+                errors.append(f"{label}.expected_decision: must describe a predicted-long lane decision")
             if key is not None:
                 long_targets.append(key)
             if before is not None and after is not None and key is not None and predicted_output_tokens is not None:
@@ -335,6 +360,8 @@ def validate_two_lane_acceptance(value: Any, errors: list[str]) -> None:
                     if after_value != expected_after:
                         errors.append(f"{label}.projected_load_after[{key!r}]: expected {expected_after:g}")
         elif lane == SHORT_LANE:
+            if expected_decision not in EXPECTED_SHORT_DECISIONS:
+                errors.append(f"{label}.expected_decision: must describe a short-normal lane decision")
             saw_short_lane = True
             if before is not None and after is not None and before != after:
                 errors.append(f"{label}: short-normal lane must not consume guarded projected long-load budget")

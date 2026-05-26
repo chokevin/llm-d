@@ -126,6 +126,8 @@ The observed proxyguard8 tradeoff should be preserved as an evaluation requireme
 
 The fixture's `two_lane_acceptance` block makes this executable enough for future tests: predicted-long assignments must use endpoint/rank identities, consume projected long-load budget sequentially, spread across at least two rank targets, and stay within explicit tail/runtime/throughput/short-latency promotion budgets. Short/normal assignments must remain in the high-throughput lane and must not consume guarded projected long-load budget.
 
+Each assignment also carries an `expected_decision`, and the fixture-level `expected_outcome` must keep the policy scoped to predicted-long traffic unless mixed-workload replay proves it is safe as a default.
+
 Likely code surfaces, if this moves beyond docs:
 
 | Surface | Change direction |
