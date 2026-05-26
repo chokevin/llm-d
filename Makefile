@@ -138,6 +138,10 @@ post-deploy-test: ## Run post deployment tests
 .PHONY: lint
 lint: ## Run lint
 
+.PHONY: validate-rollout-tail-replay
+validate-rollout-tail-replay: ## Validate H200 rollout-tail router replay acceptance fixture
+	python3 docs/research/check-h200-rollout-tail-routing-fixture.py
+
 ##@ Build
 
 .PHONY: build
